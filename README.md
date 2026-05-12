@@ -30,6 +30,9 @@ This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com)
 - npm install --save-dev jsdoc
 - bun install @tanstack/react-query
 
+#### Componentes e features do ShadCn
+- bunx --bun shadcn@latest add sonner
+
 ---
 
 #### Arquitetura utilizada
