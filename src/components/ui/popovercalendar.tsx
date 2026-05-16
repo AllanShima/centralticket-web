@@ -18,11 +18,10 @@ interface DatePickerSimpleProp {
     label?: string
 }
 
-export function DatePickerSimple({ date, setDate, label } : DatePickerSimpleProp) {
+export function DatePickerSimple({ date, setDate } : DatePickerSimpleProp) {
 
   return (
     <Field className="flex w-fit h-fit ">
-      <FieldLabel className="flex mx-auto px-0 w-fit h-fit">{label}</FieldLabel>
       <Popover>
         <PopoverTrigger asChild className="flex h-fit w-fit">
           <Button

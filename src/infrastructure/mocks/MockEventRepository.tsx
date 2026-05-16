@@ -4,10 +4,15 @@ import type IEventRepository from "@/domain/repositories/IEventRepository";
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+const generateNumericId = (length: number = 10): string => {
+  return Math.random().toString().slice(2, 2 + length);
+};
+
 export class MockEventRepository implements IEventRepository {
+
   private events: IEvent[] = [
     {
-        id: "232323222323233",
+        id: "evt_rock_in_rio_2026",
         title: "Rock in Marília",
         description: "O maior encontro de bandas de rock da região com praça de alimentação completa.",
         status: 'available',
@@ -49,7 +54,7 @@ export class MockEventRepository implements IEventRepository {
         createdAt: new Date()
     },
     {
-        id: "565656555656566",
+        id: "evt_standup_comedy",
         title: "Marília Comedy Show",
         description: "Uma noite de gargalhadas com os principais nomes do Stand-up nacional.",
         status: 'available',
@@ -68,10 +73,22 @@ export class MockEventRepository implements IEventRepository {
     return [...this.events];
   }
 
-  async save(event: Omit<IEvent, 'id'>): Promise<IEvent> {
+  async save(event: IEvent): Promise<IEvent> {
     await delay(500);
-    const newEvent = { ...event, id: "12121212" };
+    const newEvent = { ...event, id: generateNumericId(10) };
     this.events.push(newEvent);
     return newEvent;
+  }
+
+  async getById(eventId: string): Promise<IEvent> {
+    await delay(500);
+
+    const retrievedEvent = this.events.find(event => event.id === eventId);
+
+    if (retrievedEvent) {
+      return retrievedEvent;
+    }
+    
+    throw new Error(`Event with ID ${eventId} not found!`);
   }
 }

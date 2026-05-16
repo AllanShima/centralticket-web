@@ -1,13 +1,47 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeHeader from './HomeHeader'
 import HomeEventCard from './HomeEventCard'
 import { Dialog, DialogTrigger } from './ui/dialog'
 import { Button } from './ui/button'
 import { IoMdAdd } from "react-icons/io";
 import NewEventModal from './NewEventModal'
+import { useEvents } from './hooks/useEvents'
+import type { IEvent } from '@/domain/entities/Event'
+import * as motion from "motion/react-client"
 
 const Homepage = () => {
+    const { fetchEvents, events : fetchedEvents, loading } = useEvents();
+    const [events, setEvents] = useState<IEvent[]>([]);
+
+    // 1. Dispara a requisição apenas na montagem do componente
+    useEffect(() => {
+        fetchEvents();
+    }, []);
+
+    // 2. Sincroniza o estado local sempre que o hook terminar de carregar os dados
+    useEffect(() => {
+        if (fetchedEvents) {
+            setEvents(fetchedEvents);
+        }
+    }, [fetchedEvents]);
+
     const [openModal, setOpenModal] = useState(false);
+
+    const container = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+        staggerChildren: 0.1 // 0.1 second delay between each card
+        }
+    }
+    }
+
+    const item = {
+        hidden: { opacity: 0, scale: 0.95, y: 50 },
+        show: { opacity: 1, scale: 1,  y: 0 }
+    }
+
     return (
         <div className='flex flex-col w-full h-full overflow-auto'>
             <HomeHeader/>
@@ -29,16 +63,24 @@ const Homepage = () => {
                                     <IoMdAdd/>
                                 </Button>
                             </DialogTrigger>
-                            <NewEventModal setOpen={setOpenModal}/>
+                            <NewEventModal setOpen={setOpenModal} setEvents={setEvents}/>
                         </Dialog>                    
                     </div>
 
                 </div>
                 {/* Cards de Eventos do Home */}
-                <div className='grid w-full h-full grid-cols-4 gap-4 p-5'>
-                    <HomeEventCard/>                
-                    <HomeEventCard/>                
-                </div>
+                <motion.div
+                    variants={container}
+                    initial="hidden"
+                    animate="show"
+                    className='grid w-full h-full grid-cols-4 gap-4 p-5'>
+
+                    {events.map(event => (
+                        <motion.div variants={item} key={event.id}>
+                            <HomeEventCard event={event}/>                                
+                        </motion.div>
+                    ))}          
+                </motion.div>
 
             </div>
         </div>

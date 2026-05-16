@@ -27,7 +27,7 @@ export function App() {
       errorElement: <NotFoundpage/>
     },
     {
-      path: '/payment',
+      path: '/payment/:eventId',
       element: 
       <ProtectedRoute>
         <Paymentpage/>

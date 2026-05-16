@@ -1,4 +1,4 @@
-import React, { useState, type SubmitEvent } from 'react'
+import React, { useState, type Dispatch, type SetStateAction, type SubmitEvent } from 'react'
 import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Field, FieldGroup } from './ui/field'
 import { Label } from './ui/label'
@@ -6,34 +6,64 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { DatePickerSimple } from './ui/popovercalendar'
 import { toast } from 'sonner'
+import type { IEvent } from '@/domain/entities/Event'
+import { useSaveEvent } from './hooks/useEvents'
 
-const NewEventModal = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
+    // id: string;
+    // title: string;
+    // description: string;
+    // status: 'available' | 'shortly' | 'soldout';
+    // price: number;
+    // start_date: Date;
+    // end_date: Date;
+    // location: string;
+    // imageUrl: string;
+    // amount_tickets: number;
+    // remaining_tickets: number;
+    // createdAt: Date;
+
+interface NewEventModalProps {
+    setOpen: (open: boolean) => void,
+    setEvents: Dispatch<SetStateAction<IEvent[]>>;
+}
+
+const NewEventModal = ({ setOpen, setEvents }: NewEventModalProps) => {
+    const { fetchSaveEvent, loading: loadingEvent } = useSaveEvent();
     const [startDate, setStartDate] = useState<Date>(new Date());
     const [endDate, setEndDate] = useState<Date>(new Date());
-
-    const [loading, setLoading] = useState(false);
     
-    const onSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    const onSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         // Captura os dados do formulário
         const formData = new FormData(event.currentTarget);
         
         // Converte para um objeto simples
         const data = Object.fromEntries(formData.entries());
-        console.log(data);
+
+        const newEvent: IEvent = {
+            title: String(data.name || ""), // Matches <Input name='name' ... />
+            description: String(data.description || ""),
+            location: String(data.location || ""),
+            imageUrl: String(data.imageUrl || ""),
+            status: 'available',
+            price: Number(data.price || 0), // Add defaults for missing IEvent fields
+            start_date: startDate,
+            end_date: endDate,
+            amount_tickets: Number(data.amount_tickets || 0),
+            remaining_tickets: Number(data.amount_tickets || 0),
+            createdAt: new Date(),
+        }
 
         try {
-            setLoading(true);
-
             // Função pra guardar o novo evento
+            await fetchSaveEvent(newEvent); // salva no 'banco'
+            setEvents((prev) => [...prev, newEvent]); // salva na lista
 
             toast.success("Novo evento adicionado!");
             setOpen(false);
 
         } catch (error) {
             toast.error("Um erro ocorreu...", {description: String(error)})
-        } finally {
-            setLoading(false);
         }
     }
     return (
@@ -66,14 +96,32 @@ const NewEventModal = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
                         <Input name='imageUrl' required/>
                     </Field>
                 </FieldGroup>
-                <FieldGroup className='flex w-full my-5'>
-                    <Field className='flex flex-row'>
-                        <span>
-                            <DatePickerSimple date={startDate} setDate={setStartDate} label='Início'/>
-                        </span>
-                        <span>
-                            <DatePickerSimple date={endDate} setDate={setEndDate} label='Fim'/>
-                        </span>
+
+                {/* Quantidade e Preco por ticket */}
+                <FieldGroup className='flex flex-row w-full justify-between my-5'>
+                    <Field className='flex flex-col w-1/2'>
+                        <Label>Quantidade total de infressos</Label>
+                        <Input type='number' name='amount_tickets' required/>
+                    </Field>
+                    <Field className='flex flex-col w-1/2'>
+                        <Label>Preço por ticket</Label>
+                        <Input 
+                            placeholder="0.00"
+                            step="0.01"
+                            type="number"
+                            name='price' 
+                            required
+                        />
+                    </Field>
+                </FieldGroup>
+                <FieldGroup className='flex flex-row w-full justify-between my-5'>
+                    <Field className='flex flex-col w-1/2'>
+                        <Label className="flex mx-auto px-0 w-full h-fit text-start">Data inicio</Label>
+                        <DatePickerSimple date={startDate} setDate={setStartDate} label='Início'/>
+                    </Field>
+                    <Field className='flex flex-col w-1/2'>
+                        <Label>Data fim</Label>
+                        <DatePickerSimple date={endDate} setDate={setEndDate} label='Fim'/>
                     </Field>
                 </FieldGroup>
                 <DialogFooter>
@@ -82,8 +130,8 @@ const NewEventModal = ({ setOpen }: { setOpen: (open: boolean) => void }) => {
                             Cancelar
                         </Button>
                     </DialogClose>
-                    <Button variant='outline' disabled={loading} type="submit">
-                        {loading ? "Salvando..." : "Criar Evento"}
+                    <Button variant='outline' disabled={loadingEvent} type="submit">
+                        {loadingEvent ? "Salvando..." : "Criar Evento"}
                     </Button>         
                 </DialogFooter>
             </form>

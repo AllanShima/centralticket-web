@@ -1,26 +1,32 @@
 // src/infrastructure/mocks/MockTaskRepository.ts
-import { ITask } from "../../domain/entities/ITask";
-import { ITaskRepository } from "../../domain/repositories/ITaskRepository";
+import type { IUserRepository } from "@/domain/repositories/IUserRepository";
+import type { IUser } from "@/domain/entities/User";
 
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-export class MockTaskRepository implements ITaskRepository {
-  private tasks: ITask[] = [
-    { id: '1', title: 'Setup project structure', isCompleted: true },
-    { id: '2', title: 'Define domain interfaces', isCompleted: false },
-    { id: '3', title: 'Implement mockup data', isCompleted: false },
-  ];
+const generateNumericId = (length: number = 10): string => {
+  return Math.random().toString().slice(2, 2 + length);
+};
 
-  async getTasks(): Promise<ITask[]> {
+export class MockUserRepository implements IUserRepository {
+  private users: IUser[] = []
+
+  async getByUid(userId: string): Promise<IUser> {
     await delay(800); // Simulate 0.8s loading time
-    return [...this.tasks];
+    const usersList = this.users;
+    const retrievedUser = usersList.find(u => u.id === userId);
+    if (retrievedUser) {
+      return retrievedUser
+    } else{
+      throw new Error("Usuário não foi encontrado");
+    }
   }
 
-  async addTask(task: Omit<ITask, 'id'>): Promise<ITask> {
+  async save(user: IUser): Promise<IUser> {
     await delay(500);
-    const newTask = { ...task, id: Math.random().toString(36).substr(2, 9) };
-    this.tasks.push(newTask);
-    return newTask;
+    const newUser = { ...user, id: generateNumericId(10) };
+    this.users.push(newUser);
+    return newUser;
   }
 }

@@ -29,7 +29,7 @@ This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com)
 - bun install react-hot-toast
 - npm install --save-dev jsdoc
 - bun install @tanstack/react-query
-
+- bun install motion (Animations)
 ---
 
 #### Componentes e features do ShadCn
@@ -37,6 +37,7 @@ This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com)
 - bunx --bun shadcn@latest add badge
 - bunx --bun shadcn@latest add dialog
 - bunx --bun shadcn@latest add field
+- bunx --bun shadcn@latest add radio-group
 
 ##### Date
 - bunx --bun shadcn@latest add popover

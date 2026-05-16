@@ -1,5 +1,5 @@
 export interface IEvent {
-    id: string;
+    id?: string;
     title: string;
     description: string;
     status: 'available' | 'shortly' | 'soldout';

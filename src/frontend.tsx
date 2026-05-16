@@ -8,12 +8,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import { AuthProvider } from "./components/hooks/AuthContext";
 
 const elem = document.getElementById("root")!;
 const app = (
-  <StrictMode>
-    <App />
-  </StrictMode>
+  <AuthProvider>
+    <StrictMode>
+      <App />
+    </StrictMode>    
+  </AuthProvider>
+
 );
 
 if (import.meta.hot) {

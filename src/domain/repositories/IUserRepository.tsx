@@ -1,6 +1,6 @@
 import type { IUser } from "../entities/User";
 
 export interface IUserRepository {
-    getAll(): Promise<IUser[]>;
-    save(task: IUser): Promise<void>;
+    getByUid(userId: string): Promise<IUser>;
+    save(user: IUser): Promise<IUser>;
 }

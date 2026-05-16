@@ -7,30 +7,44 @@ import { Button } from './ui/button'
 import { IoEnterOutline } from 'react-icons/io5'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
+import { useSaveUser } from './hooks/useUsers'
+import type { IUser } from '@/domain/entities/User'
 
 const Registerpage = () => {
+  const { fetchSaveUser, loading: userLoading } = useSaveUser();
   const navigate = useNavigate();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [loading, setLoading] = useState(false);
-
   // Lógica de registrar novo usuário
-  const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
       return toast.error("Senhas não conferem!");
     }
+
+    const newUser: IUser = {
+      name: name,
+      email: email,
+      password: password, // Opcional dependendo de onde for usada (ex: frontend)
+      sales: [],
+      createdAt: new Date
+    }
+
     try {
-      setLoading(true);
+      await fetchSaveUser(newUser);
+
+      // Autenticação do usuário
+
+      toast.success("Usuário cadastrado com sucesso!");
     } catch (error) {   
       toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});
     } finally {
-      setLoading(false);
-      navigate('/home'); 
+      navigate('/login'); 
     }
   }
 
@@ -46,8 +60,23 @@ const Registerpage = () => {
                   <CardContent className='flex flex-col w-full gap-5'>
                     <div className='flex-col w-full h-fit'>
                         <div className='flex flex-col gap-2'>
+                            <Label htmlFor="name" className='text-md w-fit text-gray-800'>
+                              Nome
+                            </Label>
+                            <Input 
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              id="name"
+                              type="name"
+                              placeholder="João Freire"
+                              required
+                            />
+                        </div>
+                    </div>
+                    <div className='flex-col w-full h-fit'>
+                        <div className='flex flex-col gap-2'>
                             <Label htmlFor="email" className='text-md w-fit text-gray-800'>
-                                Email
+                              Email
                             </Label>
                             <Input 
                               value={email}
@@ -91,10 +120,10 @@ const Registerpage = () => {
                     </div>
                   </CardContent>
                   <CardFooter className='flex flex-col w-100 h-fit gap-5'>
-                      <Button disabled={loading} type="submit" className="flex w-full h-fit">
+                      <Button disabled={userLoading} type="submit" className="flex w-full h-fit">
                         <IoEnterOutline className='flex size-6'/>
                         <h2 className='font-medium text-lg'>
-                          {loading ? 'Carregando...' : 'Cadastrar'}
+                          {userLoading ? 'Carregando...' : 'Cadastrar'}
                         </h2>
                       </Button>
                       <h3 className='flex gap-2 text-gray-600'>

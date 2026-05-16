@@ -9,68 +9,90 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { useNavigate } from 'react-router';
 
 interface HomeEventCardProps {
-  event?: IEvent
+  event: IEvent | undefined
 }
 
 const HomeEventCard = ({event} : HomeEventCardProps) => {
 
   const navigate = useNavigate();
 
-  const title = event?.title || "undefined";
-  const description = event?.description || "undefined";
-  const status = event?.status || "undefined";
-  const price = event?.price || "undefined";
-  const start_date = event?.start_date || "undefined";
-  const location = event?.location || "undefined";
-  const imageUrl = event?.imageUrl || "undefined";
+  const price = event?.price.toFixed(2) || "undefined";
+  const start_date = event?.start_date.toLocaleDateString('pt-BR');
+
+  const statusTranslated = {
+    "available": "disponível",
+    "shortly": "em breve",
+    "soldout": "esgotado"
+  }
+
+  if (!event) {
+    return (
+      <Card>
+        <CardTitle>
+          Evento não encontrado...
+        </CardTitle>
+      </Card>
+    )
+  }
 
   return (
-    <Card className='relative mx-auto w-full max-w-sm pt-0 rounded-2xl shadow-lg'>
-      <div className='absolute inset-0 z-30 aspect-video bg-black/35 rounded-t-2xl'/>
-      {imageUrl !== 'undefined' ? (
-      <img 
-      className="relative z-20 aspect-video w-full object-cover dark:brightness-40 rounded-t-2xl"
-      src={imageUrl} />
-      ) : (
-        <div className='relative flex z-20 aspect-video w-full object-cover h-full justify-center items-center'>
-          [Imagem não encontrada]
-        </div>
-      )}
-      <CardHeader>
-        <CardAction>
-          <Badge variant="secondary">{status}</Badge>
-        </CardAction>
-        <CardTitle className='w-fit'>
-          {title}
-        </CardTitle>
-        <CardDescription className='w-fit'>
-          {description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className='flex flex-col gap-3 text-gray-600'>
-        {/* Data de inicio do evento */}
-        <span className='flex justify-center items-center w-fit gap-2'>
-          <FaRegCalendar/>
-          <h4>{start_date.toString()}</h4>
-        </span>
-        {/* Localização do evento */}
-        <span className='flex justify-center items-center w-fit gap-2'>
-          <HiOutlineLocationMarker/>
-          <h4>{location}</h4>
-        </span>
-      </CardContent>
-      <hr />
-      <CardFooter className='flex justify-between'>
-        <div className='flex flex-col'>
-          <CardDescription className='w-fit'>A partir de</CardDescription>
-          <h3 className='w-fit'>{price}</h3>
-        </div>
-        <Button onClick={() => navigate('/payment', { state: { event } })} className="w-fit h-fit px-5 py-3">
-          <BsCart3/>
-          Comprar
-        </Button>
-      </CardFooter>
-    </Card>
+    <Card className='relative mx-auto w-full h-full max-w-sm pt-0 rounded-2xl shadow-lg'>
+          <div className='absolute inset-0 z-30 aspect-video bg-black/35 rounded-t-2xl'/>
+          <img 
+          className="relative z-20 aspect-video w-full object-cover dark:brightness-40 rounded-t-2xl"
+          src={event.imageUrl} />
+          <CardHeader className='w-full h-full'>
+            <CardAction>
+              <Badge variant="secondary">
+                {statusTranslated[event.status]}
+              </Badge>
+            </CardAction>
+            <CardTitle className='w-fit h-full'>
+              {event.title}
+            </CardTitle>
+            <CardDescription className='w-fit h-full text-start'>
+              {event.description}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='flex flex-col h-full gap-3 text-gray-600'>
+            {/* Data de inicio do evento */}
+            <span className='flex justify-center items-center w-fit gap-2'>
+              <FaRegCalendar/>
+              <h4>
+                {start_date}
+              </h4>
+            </span>
+            {/* Localização do evento */}
+            <span className='flex justify-center items-center w-fit gap-2'>
+              <HiOutlineLocationMarker/>
+              <h4>{event.location}</h4>
+            </span>
+          </CardContent>
+          <hr />
+          <CardFooter className='flex justify-between'>
+            <div className='flex flex-col'>
+              <CardDescription className='w-fit'>
+                A partir de
+              </CardDescription>
+              <h3 className='w-fit'>
+                R$ {price}
+              </h3>
+            </div>
+            {event.status === "available" ? (
+              <Button onClick={() => navigate(`/payment/${event?.id}`)} className="w-fit h-fit px-5 py-3">
+                <BsCart3/>
+                Comprar
+              </Button>
+            ) : (
+              <Button disabled variant="ghost" className="w-fit h-fit px-5 py-3">
+                <BsCart3/>
+                Esgotado
+              </Button>
+            )}
+
+          </CardFooter>
+      </Card>
+
   )
 }
 
