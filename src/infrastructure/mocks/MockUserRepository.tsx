@@ -1,6 +1,9 @@
 // src/infrastructure/mocks/MockTaskRepository.ts
 import type { IUserRepository } from "@/domain/repositories/IUserRepository";
 import type { IUser } from "@/domain/entities/User";
+import type { ISale } from "@/domain/entities/Sale";
+import { MockSaleRepository } from "./MockSaleRepository";
+import { BASE_USERS } from "./constants/mocks";
 
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -10,11 +13,13 @@ const generateNumericId = (length: number = 10): string => {
 };
 
 export class MockUserRepository implements IUserRepository {
-  private users: IUser[] = []
+
+  private users = BASE_USERS;
 
   async getByUid(userId: string): Promise<IUser> {
     await delay(800); // Simulate 0.8s loading time
     const usersList = this.users;
+    console.log(usersList);
     const retrievedUser = usersList.find(u => u.id === userId);
     if (retrievedUser) {
       return retrievedUser
@@ -28,5 +33,17 @@ export class MockUserRepository implements IUserRepository {
     const newUser = { ...user, id: generateNumericId(10) };
     this.users.push(newUser);
     return newUser;
+  }
+
+  async updateSalesById(userId: string, newSale: ISale): Promise<IUser> {
+    await delay(500);
+    const usersList = this.users;
+    const retrievedUser = usersList.find(u => u.id === userId);
+    if (retrievedUser) {
+      retrievedUser.sales?.push(newSale);
+      return retrievedUser
+    } else{
+      throw new Error("Erro ao realizar push de venda.");
+    }
   }
 }

@@ -38,6 +38,7 @@ This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com)
 - bunx --bun shadcn@latest add dialog
 - bunx --bun shadcn@latest add field
 - bunx --bun shadcn@latest add radio-group
+- bunx --bun shadcn@latest add avatar
 
 ##### Date
 - bunx --bun shadcn@latest add popover

@@ -1,5 +1,8 @@
+import type { ISale } from '@/domain/entities/Sale';
 import type { IUser } from '@/domain/entities/User';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useSalesByUid } from './useSales';
+import { useUserByUid } from './useUsers';
 
 // 1. Define the shape of the Context
 interface AuthContextType {
@@ -12,23 +15,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // 3. The Provider Component
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const { fetchUser, user: fetchedUser, loading } = useUserByUid();
   const [user, setUser] = useState<IUser | null>(null);
-  const [loading, setLoading] = useState(false);
 
   // Usuário teste para autenticar automaticamente
-  const authUser: IUser = {
-    id: "5r432532",
-    name: "Alanzoka",
-    email: "alanzoka@gmail.com",
-    password: "Seilamano", // Opcional dependendo de onde for usada (ex: frontend)
-    sales: [],
-    createdAt: new Date
-  }
+  const userId = "5r432532"
+
+
+  
 
   useEffect(() => {
-    setUser(authUser);
-    setLoading(false);
+    
+    fetchUser(userId);
+    
   }, [])
+
+  useEffect(() => {
+    if (fetchedUser) {
+      console.log(fetchedUser);
+      setUser(fetchedUser);
+    }
+  }, [fetchedUser])
 
   // useEffect(() => {
   //   // const auth = getAuth(app);

@@ -23,8 +23,8 @@ const PurchasedTicketsCard = ({sales} : PurchasedTicketsCardProps) => {
     }
 
     return (
-        <Card className='p-8 shadow-lg'>
-            <CardTitle className='w-full text-start'>
+        <Card className='flex p-8 shadow-lg'>
+            <CardTitle className='w-full text-start text-xl'>
                 Meus Ingressos
             </CardTitle>
             {sales.length === 0 ? (

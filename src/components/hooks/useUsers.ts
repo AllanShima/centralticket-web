@@ -3,6 +3,7 @@ import type { IEvent } from '@/domain/entities/Event';
 import { toast } from 'sonner';
 import { MockUserRepository } from '@/infrastructure/mocks/MockUserRepository';
 import type { IUser } from '@/domain/entities/User';
+import type { ISale } from '@/domain/entities/Sale';
 
 // Instanciamos fora para não recriar a cada renderização
 const repo = new MockUserRepository();
@@ -44,4 +45,22 @@ export function useSaveUser() {
   };
 
   return { fetchSaveUser, loading };
+}
+
+export function useUpdateUserById() {
+  const [loading, setLoading] = useState(false);
+
+  const fetchSalesById = async (userId: string, newSale: ISale) => {
+    try {
+      setLoading(true);
+      await repo.updateSalesById(userId, newSale);
+    } catch (error) {
+      toast.error("Erro ao salvar novo usuário:", {description: String(error)});
+      console.error("Erro ao salvar novo usuário:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchSalesById, loading };
 }

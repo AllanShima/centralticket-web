@@ -1,5 +1,6 @@
 import type { ISale } from "@/domain/entities/Sale";
 import type ISaleRepository from "@/domain/repositories/ISaleRepository";
+import { BASE_SALES } from "./constants/mocks";
 
 // Helper to simulate network latency
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -9,45 +10,8 @@ const generateNumericId = (length: number = 10): string => {
 };
 
 export class MockSaleRepository implements ISaleRepository {
-  private sales: ISale[] = 
-  [
-    {
-      "id": "ord_84719203",
-      "userId": "5r432532",
-      "ticketId": "tkt_01h8x9",
-      "ticketSnapshot": {
-        "id": "tkt_01h8x9",
-        "eventId": "evt_rock_in_rio_2026",
-        "title": "Ingresso Pista - Rock in Rio",
-        "price": 450.00,
-        "description": "Acesso total à pista comum para o dia 15 de setembro."
-      },
-      "amount": 2,
-      "total": 900.00,
-      "orderNumber": "REF-2026-99381",
-      "status": "confirmed",
-      "paymentMethod": "pix",
-      "createdAt": new Date
-    },
-    {
-      "id": "ord_51627384",
-      "userId": "5r432532",
-      "ticketId": "tkt_02j9y0",
-      "ticketSnapshot": {
-        "id": "tkt_02j9y0",
-        "eventId": "evt_standup_comedy",
-        "title": "Ingresso VIP - Show de Comédia",
-        "price": 120.00,
-        "description": "Lugar na primeira fileira com direito a uma bebida grátis."
-      },
-      "amount": 1,
-      "total": 120.00,
-      "orderNumber": "REF-2026-44129",
-      "status": "pending",
-      "paymentMethod": "credit_card",
-      "createdAt": new Date
-    }
-  ]
+  
+  private sales = BASE_SALES;
 
   async getAllByUserId(userId : string): Promise<ISale[]> {
     await delay(800); // Simulate 0.8s loading time
