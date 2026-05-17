@@ -72,13 +72,13 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
 
     return (
         <Card className='w-full shadow-lg'>
-            <form className='w-full h-full' onSubmit={onSubmit}>
+            <form className='flex flex-col gap-3 w-full h-full' onSubmit={onSubmit}>
                 <CardHeader className='w-full'>
                     <CardTitle className='w-fit text-start text-xl'>
                         Informações do Evento
                     </CardTitle>
 
-                    <div className='w-full h-fit'>
+                    <div className='flex flex-col w-full h-fit gap-4'>
                         <Label>
                             Quantidade de Ingressos
                         </Label>
@@ -90,33 +90,48 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
                         required/>
                     </div>
                 </CardHeader>
-                <CardContent className='flex flex-col gap-3 w-full h-full text-gray-600'>
-                    <Label>
+
+                <CardContent className='flex flex-col gap-2 w-full h-full text-slate-800'>
+                    <Label className="text-base font-semibold text-slate-700">
                         Método de Pagamento
                     </Label>
+                    
                     <RadioGroup 
-                    defaultValue="credit_card" 
-                    value={purchaseOption} 
-                    onValueChange={(value) => setPurchaseOption(value as "credit_card" | "debit_card" | "pix")}
-                    className="w-full">
-                        <div className="flex w-full h-fit outline-1  items-center gap-3">
-                            <RadioGroupItem value="credit_card" id="r1"/>
-                            <FaRegCreditCard/>
-                            <Label htmlFor="r1" className='w-full h-full bg-amber-400'>Cartão de Crédito</Label>  
+                        defaultValue="credit_card" 
+                        value={purchaseOption} 
+                        onValueChange={(value) => setPurchaseOption(value as "credit_card" | "debit_card" | "pix")}
+                        className="flex flex-col gap-2 w-full"
+                    >
+                        {/* Opção: Cartão de Crédito */}
+                        <div className="flex items-center gap-2 w-full p-4 outline outline-slate-200 rounded-xl transition-all">
+                            <RadioGroupItem value="credit_card" id="r1" className="text-teal-600" />
+                            <FaRegCreditCard className="text-xl text-slate-600" />
+                            <Label htmlFor="r1" className='w-full font-medium text-base cursor-pointer py-1'>
+                                Cartão de Crédito
+                            </Label>  
                         </div>
-                        <div className="flex items-center gap-3">
-                            <RadioGroupItem value="debit_card" id="r2" />
-                            <Label htmlFor="r2">Cartão de Débito</Label>
+
+                        {/* Opção: Cartão de Débito */}
+                        <div className="flex items-center gap-2 w-full p-4 outline outline-slate-200 rounded-xl transition-all">
+                            <RadioGroupItem value="debit_card" id="r2" className="text-teal-600" />
+                            <FaRegCreditCard className="text-xl text-slate-600" />
+                            <Label htmlFor="r2" className='w-full font-medium text-base cursor-pointer py-1'>
+                                Cartão de Débito
+                            </Label>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <RadioGroupItem value="pix" id="r3" />
-                            <Label htmlFor="r3">Pix</Label>
+
+                        {/* Opção: PIX */}
+                        <div className="flex items-center gap-2 w-full p-4 outline outline-slate-200 rounded-xl transition-all">
+                            <RadioGroupItem value="pix" id="r3" className="text-teal-600" />
+                            <Label htmlFor="r3" className='w-full font-medium text-base cursor-pointer py-1'>
+                                PIX
+                            </Label>
                         </div>
                     </RadioGroup>
                 </CardContent>
-
-                <CardFooter className='flex flex-col w-full h-fit gap-2 '>
-                    <hr/>
+                <hr/>
+                <CardFooter className='flex flex-col w-full h-fit gap-4 text-gray-700'>
+                    
                     <span className='flex flex-row w-full h-fit justify-between'>
                         <h4>
                             Subtotal ({quantity.toString()}x) 
@@ -125,7 +140,6 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
                             R$ {((ticket?.price ?? 0) * quantity).toFixed(2)}
                         </h4>
                     </span>
-                    <hr className='outline-1 border-1'/>
                     <span className='flex flex-row w-full h-fit justify-between'>
                         <h4>
                             Total
@@ -134,11 +148,13 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
                             R$ {((ticket?.price ?? 0) * quantity).toFixed(2)}
                         </h4>
                     </span>
-                    <Button type='submit' className='w-full' disabled={loadingSale}>
+                    <Button type='submit' className='w-full h-full my-2' disabled={loadingSale}>
                         <FaRegCreditCard/>
                         {loadingSale ? "Carregando..." : "Finalizar Compra"}
                     </Button>
-                    <h4 className='text-gray-800'>Pagamento segudo e protegido por nós :D</h4>
+                    <h4 className='text-gray-800'>
+                        Pagamento seguro e protegido :D
+                    </h4>
                 </CardFooter>                
             </form>
 
