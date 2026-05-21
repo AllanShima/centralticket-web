@@ -1,3 +1,9 @@
+### Escopo do Projeto
+
+<img width="1352" height="661" alt="escopo_centralticket-web drawio" src="https://github.com/user-attachments/assets/8d04cc3e-edfa-4e42-9f19-f3c84d5be615" />
+
+---
+
 # bun-react-tailwind-shadcn-template
 
 To install dependencies:
