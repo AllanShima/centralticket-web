@@ -8,6 +8,25 @@ import type { ISale } from '@/domain/entities/Sale';
 // Instanciamos fora para não recriar a cada renderização
 const repo = new MockUserRepository();
 
+export function useUsers() {
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const data = await repo.getAll();  // é uma promise, ent precisa do try catch e await
+      setUsers(data);
+    } catch (error) {
+      console.error("Erro ao buscar usuário:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchUsers, users, loading };
+}
+
 export function useUserByUid() {
   const [user, setUser] = useState<IUser>();
   const [loading, setLoading] = useState(false);
@@ -15,10 +34,9 @@ export function useUserByUid() {
   const fetchUser = async (userId: string) => {
     try {
       setLoading(true);
-      const data = await repo.getByUid(userId);  // é uma promise, ent precisa do try catch e await
+      const data = await repo.getByUid(userId);
       setUser(data);
     } catch (error) {
-      toast.error("Erro ao buscar usuário:", {description: String(error)});
       console.error("Erro ao buscar usuário:", error);
     } finally {
       setLoading(false);
@@ -37,7 +55,6 @@ export function useSaveUser() {
       setLoading(true);
       await repo.save(user);
     } catch (error) {
-      toast.error("Erro ao salvar novo usuário:", {description: String(error)});
       console.error("Erro ao salvar novo usuário:", error);
     } finally {
       setLoading(false);
@@ -55,7 +72,6 @@ export function useUpdateUserById() {
       setLoading(true);
       await repo.updateSalesById(userId, newSale);
     } catch (error) {
-      toast.error("Erro ao salvar novo usuário:", {description: String(error)});
       console.error("Erro ao salvar novo usuário:", error);
     } finally {
       setLoading(false);

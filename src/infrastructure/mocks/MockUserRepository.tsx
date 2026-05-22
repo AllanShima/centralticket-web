@@ -2,7 +2,6 @@
 import type { IUserRepository } from "@/domain/repositories/IUserRepository";
 import type { IUser } from "@/domain/entities/User";
 import type { ISale } from "@/domain/entities/Sale";
-import { MockSaleRepository } from "./MockSaleRepository";
 import { BASE_USERS } from "./constants/mocks";
 
 // Helper to simulate network latency
@@ -16,10 +15,19 @@ export class MockUserRepository implements IUserRepository {
 
   private users = BASE_USERS;
 
-  async getByUid(userId: string): Promise<IUser> {
-    await delay(800); // Simulate 0.8s loading time
+  async getAll(): Promise<IUser[]> {
+    await delay(500);
     const usersList = this.users;
-    console.log(usersList);
+    if (usersList){
+      return usersList;
+    } else {
+      throw new Error("Usuários não encontrados");
+    }
+  }
+
+  async getByUid(userId: string): Promise<IUser> {
+    await delay(800);
+    const usersList = this.users;
     const retrievedUser = usersList.find(u => u.id === userId);
     if (retrievedUser) {
       return retrievedUser

@@ -7,25 +7,31 @@ import Logo from './ui/Logo'
 import { IoEnterOutline } from "react-icons/io5";
 import { toast, Toaster } from 'sonner'
 import { useNavigate } from 'react-router'
+import { useUserByUid, useUsers } from './hooks/useUsers'
 
 const Loginpage = () => {
     const navigate = useNavigate();
     
+    const { fetchUsers, users, loading} = useUsers();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const [loading, setLoading] = useState(false);
 
     // Lógica de autenticar novo usuário
     const onSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // cria token
+        await fetchUsers();
+
+        const retrievedUser = users.find((u) => u.email == email);
+    
         try {
-            setLoading(true);
+            if (!retrievedUser || retrievedUser.password !== password) {
+                throw new Error("Usuário não encontrado.");
+            }
+            navigate('/home');
         } catch (error) {   
             toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});
-        } finally {
-            setLoading(false);
-            navigate('/home');
         }
     }
 

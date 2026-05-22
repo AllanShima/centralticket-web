@@ -60,7 +60,7 @@ export function useAuth() {
   
   // Safety check: ensure the hook is used within the Provider
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth precisa estar dentro de AuthProvider');
   }
   
   return context;
