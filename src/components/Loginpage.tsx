@@ -24,6 +24,8 @@ const Loginpage = () => {
         await fetchUsers();
 
         const retrievedUser = users.find((u) => u.email == email);
+
+        console.log(users);
     
         try {
             if (!retrievedUser || retrievedUser.password !== password) {

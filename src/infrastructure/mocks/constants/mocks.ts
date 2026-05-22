@@ -105,11 +105,11 @@ export const BASE_USERS: IUser[] = [
   {
     id: "5r432532",
     name: "Allan Shinhama",
-    email: "allanshinhama@outlook.com",
-    password: "alanzoka",
+    email: "allanshinhamabelo@gmail.com",
+    password: "shinhama",
     sales: [
-        BASE_SALES[0]!,
-        BASE_SALES[1]!
+      BASE_SALES[0]!,
+      BASE_SALES[1]!
     ],
     createdAt: new Date()
   }

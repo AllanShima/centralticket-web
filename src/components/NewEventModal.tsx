@@ -100,7 +100,7 @@ const NewEventModal = ({ setOpen, setEvents }: NewEventModalProps) => {
                 {/* Quantidade e Preco por ticket */}
                 <FieldGroup className='flex flex-row w-full justify-between my-5'>
                     <Field className='flex flex-col w-1/2'>
-                        <Label>Quantidade total de infressos</Label>
+                        <Label>Ingressos disponíveis</Label>
                         <Input type='number' name='amount_tickets' required/>
                     </Field>
                     <Field className='flex flex-col w-1/2'>

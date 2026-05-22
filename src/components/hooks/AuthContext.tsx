@@ -4,25 +4,22 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useSalesByUid } from './useSales';
 import { useUserByUid } from './useUsers';
 
-// 1. Define the shape of the Context
+// O modelo do contexto
 interface AuthContextType {
   user: IUser | null;
   loading: boolean;
 }
 
-// 2. Create the Context with a default value of undefined
+// Criando o contexto
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// 3. The Provider Component
+// Provider
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { fetchUser, user: fetchedUser, loading } = useUserByUid();
   const [user, setUser] = useState<IUser | null>(null);
 
   // Usuário teste para autenticar automaticamente
   const userId = "5r432532"
-
-
-  
 
   useEffect(() => {
     
@@ -54,11 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// 4. The Custom Hook
+// Hook de autenticação
 export function useAuth() {
   const context = useContext(AuthContext);
   
-  // Safety check: ensure the hook is used within the Provider
+  // Cheque de segurança
   if (context === undefined) {
     throw new Error('useAuth precisa estar dentro de AuthProvider');
   }

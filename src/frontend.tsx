@@ -17,7 +17,6 @@ const app = (
       <App />
     </StrictMode>    
   </AuthProvider>
-
 );
 
 if (import.meta.hot) {
