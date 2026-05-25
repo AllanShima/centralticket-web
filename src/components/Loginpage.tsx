@@ -7,12 +7,14 @@ import Logo from './ui/Logo'
 import { IoEnterOutline } from "react-icons/io5";
 import { toast, Toaster } from 'sonner'
 import { useNavigate } from 'react-router'
-import { useUserByUid, useUsers } from './hooks/useUsers'
+import { useLogin } from './hooks/useAuth'
+import type { LoginRequest } from '@/domain/requests/LoginRequest'
 
 const Loginpage = () => {
-    const navigate = useNavigate();
-    
-    const { fetchUsers, users, loading} = useUsers();
+    const navigate = useNavigate()
+
+    const { fetchLogin, loading} = useLogin();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -20,19 +22,21 @@ const Loginpage = () => {
     const onSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // cria token
-        await fetchUsers();
+        const credentials: LoginRequest = {
+            email: email,
+            password: password
+        }
 
-        const retrievedUser = users.find((u) => u.email == email);
+        // const retrievedUser = users.find((u) => u.email == email);
+        // if (!retrievedUser || retrievedUser.password !== password) {
+        //     throw new Error("Usuário não encontrado.");
+        // }
 
-        console.log(users);
-    
         try {
-            if (!retrievedUser || retrievedUser.password !== password) {
-                throw new Error("Usuário não encontrado.");
-            }
+            await fetchLogin(credentials);
+            toast.success("Usuário logado com sucesso!");
             navigate('/home');
-        } catch (error) {   
+        } catch (error) {
             toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});
         }
     }

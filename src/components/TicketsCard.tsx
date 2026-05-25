@@ -28,8 +28,8 @@ const TicketsCard = ({sale} : TicketsCardProps) => {
     const payment = sale.paymentMethod ? payment_option[sale.paymentMethod] : "undefined";
 
     useEffect(() => {
-        if (sale.ticketSnapshot?.eventId) {
-            fetchEventById(sale.ticketSnapshot?.eventId)
+        if (sale.ticket?.eventId) {
+            fetchEventById(sale.ticket?.eventId)
         }
     }, [sale])
 
@@ -54,7 +54,7 @@ const TicketsCard = ({sale} : TicketsCardProps) => {
                 </CardHeader>
                 <CardContent className='flex flex-col w-full gap-3 text-gray-600'>
                     <CardTitle className='text-start text-xl text-black'>
-                        {sale.ticketSnapshot?.title}
+                        {sale.ticket?.title}
                     </CardTitle>
                     {/* Datas */}
                     <div className='flex justify-center items-center w-fit gap-4'>

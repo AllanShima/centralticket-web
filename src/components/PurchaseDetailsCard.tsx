@@ -9,18 +9,23 @@ import { toast } from 'sonner'
 import type { ITicket } from '@/domain/entities/Ticket'
 import { useNavigate } from 'react-router'
 import type { ISale } from '@/domain/entities/Sale'
-import { useAuth } from './hooks/AuthContext'
+import { useAuth } from './contexts/AuthContext'
 import { useAddSale } from './hooks/useSales'
+import { useUserByUid } from './hooks/useUsers'
 
 interface PurchaseDetailsCardProps {
     ticket?: ITicket
 }
 
 const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
-    const { user, loading: loadingUser } = useAuth();
+    const navigate = useNavigate();
+    // const { user, loading: loadingUser } = useAuth();
+    const { fetchUser, user, loading: loadingUser } = useUserByUid();
     const { fetchSave, loading: loadingSale } = useAddSale()
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        fetchUser('5r432532');
+    }, [])
 
     const [quantity, setQuantity] = useState(1);
     const [purchaseOption, setPurchaseOption] = useState<ISale['paymentMethod']>("credit_card");
@@ -43,8 +48,7 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
 
         const newSale: ISale = {
             userId: user?.id,
-            ticketId: ticket?.id,
-            ticketSnapshot: ticket,
+            ticket: ticket,
             total: totalPrice,
             amount: quantity,
             orderNumber: user?.id + "123",

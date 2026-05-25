@@ -4,11 +4,21 @@ import { useNavigate } from 'react-router';
 import { FaRegUser } from "react-icons/fa";
 import { BiExit } from "react-icons/bi";
 import Logo from './ui/Logo';
+import { useAuth } from './contexts/AuthContext';
+import { toast } from 'sonner';
 
 const HomeHeader = () => {
+    const { user, loading, logout } = useAuth();
     const navigate = useNavigate();
-    const handleLogout = () => {
-        navigate('/login');
+    const handleLogout = async () => {
+        try {
+            await logout();
+        } catch (error) {
+            toast.error("Erro ao realizar logout", {description: String(error)});
+        } finally {
+            navigate('/login');
+            toast.success("Usuário deslogado com sucesso!", {description: user?.name})            
+        }
     }
     return (
         <div className='flex w-full h-fit shadow-md justify-between bg-white p-5'>
@@ -19,7 +29,7 @@ const HomeHeader = () => {
                     <FaRegUser className='w-6 h-6'/>
                     <h2>[Usuario]</h2>
                 </button>
-                <button onClick={() => handleLogout()} className='flex p-3 hover:bg-red-100 font-medium gap-2 text-red-700 items-center rounded-xl transition'>
+                <button onClick={() => handleLogout()} disabled={loading} className='flex p-3 hover:bg-red-100 font-medium gap-2 text-red-700 items-center rounded-xl transition'>
                     <BiExit className='w-6 h-6'/>
                     <h2>Sair</h2>
                 </button>

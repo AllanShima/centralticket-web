@@ -66,9 +66,7 @@ export const BASE_SALES: ISale[] =
   {
     "id": "ord_84719203",
     "userId": "5r432532",
-    "ticketId": "tkt_01h8x9",
-    "ticketSnapshot": {
-      "id": "tkt_01h8x9",
+    "ticket": {
       "eventId": "evt_rock_in_rio_2026",
       "title": "Ingresso Pista - Rock in Rio",
       "price": 450.00,
@@ -84,9 +82,7 @@ export const BASE_SALES: ISale[] =
   {
     "id": "ord_51627384",
     "userId": "5r432532",
-    "ticketId": "tkt_02j9y0",
-    "ticketSnapshot": {
-      "id": "tkt_02j9y0",
+    "ticket": {
       "eventId": "evt_standup_comedy",
       "title": "Ingresso Comum - Show de Comédia",
       "price": 120.00,

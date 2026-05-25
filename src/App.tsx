@@ -18,7 +18,6 @@ export function App() {
 
   const mainRouter = createBrowserRouter([
     {
-      index: true, // Rota padrão
       path: '/home',
       element: 
       <ProtectedRoute>

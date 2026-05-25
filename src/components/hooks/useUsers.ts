@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { MockUserRepository } from '@/infrastructure/mocks/MockUserRepository';
 import type { IUser } from '@/domain/entities/User';
 import type { ISale } from '@/domain/entities/Sale';
+import { UserRepository } from '@/infrastructure/UserRepository';
 
 // Instanciamos fora para não recriar a cada renderização
 const repo = new MockUserRepository();

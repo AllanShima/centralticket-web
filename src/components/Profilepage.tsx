@@ -3,12 +3,18 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from 'react-router';
 import UserInfoCard from './UserInfoCard';
 import PurchasedTicketsCard from './PurchasedTicketsCard';
-import { useAuth } from './hooks/AuthContext';
+import { useAuth } from './contexts/AuthContext';
 import { useSalesByUid } from './hooks/useSales';
+import { useUserByUid } from './hooks/useUsers';
 
 const Profilepage = () => {
-  const { user, loading: userLoading } = useAuth();
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+  // const { user, loading: userLoading } = useAuth();
+  const { fetchUser, user, loading: userLoading } = useUserByUid();
+
+  useEffect(() => {
+    fetchUser('5r432532');
+  }, [])
 
   const sales = user?.sales ? user.sales : [];
 

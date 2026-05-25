@@ -9,11 +9,12 @@ import { toast } from 'sonner'
 import { useNavigate } from 'react-router'
 import { useSaveUser } from './hooks/useUsers'
 import type { IUser } from '@/domain/entities/User'
+import { useRegister } from './hooks/useAuth'
+import type { RegisterRequest } from '@/domain/requests/RegisterRequest'
 
 const Registerpage = () => {
-  const { fetchSaveUser, loading: userLoading } = useSaveUser();
+  const { fetchRegister, loading: userLoading } = useRegister();
   const navigate = useNavigate();
-
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,24 +28,18 @@ const Registerpage = () => {
       return toast.error("Senhas não conferem!");
     }
 
-    const newUser: IUser = {
+    const credentials: RegisterRequest = {
       name: name,
       email: email,
-      password: password, // Opcional dependendo de onde for usada (ex: frontend)
-      sales: [],
-      createdAt: new Date
+      password: password
     }
 
     try {
-      await fetchSaveUser(newUser);
-
-      // Autenticação do usuário
-
+      await fetchRegister(credentials);
+      navigate('/login');
       toast.success("Usuário cadastrado com sucesso!");
     } catch (error) {   
       toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});
-    } finally {
-      navigate('/login'); 
     }
   }
 

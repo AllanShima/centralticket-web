@@ -8,9 +8,6 @@ import type { ITicket } from '@/domain/entities/Ticket';
 import { toast } from 'sonner';
 
 const Paymentpage = () => {
-  const generateNumericId = (length: number = 10): string => {
-    return Math.random().toString().slice(2, 2 + length);
-  };
 
   const { eventId } = useParams();
   const { fetchEventById, event, loading } = useEvent();
@@ -27,7 +24,6 @@ const Paymentpage = () => {
   
   useEffect(() => {
     const ticketInfo : ITicket = {
-      id: generateNumericId(7),
       eventId: eventId || "",
       title: "Ingresso de " + event?.title,
       price: event?.price ?? 0,

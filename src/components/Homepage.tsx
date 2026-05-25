@@ -13,12 +13,10 @@ const Homepage = () => {
     const { fetchEvents, events : fetchedEvents, loading } = useEvents();
     const [events, setEvents] = useState<IEvent[]>([]);
 
-    // 1. Dispara a requisição apenas na montagem do componente
     useEffect(() => {
         fetchEvents();
     }, []);
 
-    // 2. Sincroniza o estado local sempre que o hook terminar de carregar os dados
     useEffect(() => {
         if (fetchedEvents) {
             setEvents(fetchedEvents);
@@ -27,16 +25,16 @@ const Homepage = () => {
 
     const [openModal, setOpenModal] = useState(false);
 
+    // animação para os cards de eventos
     const container = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-        staggerChildren: 0.1 // 0.1 second delay between each card
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+            staggerChildren: 0.1
+            }
         }
     }
-    }
-
     const item = {
         hidden: { opacity: 0, scale: 0.95, y: 50 },
         show: { opacity: 1, scale: 1,  y: 0 }
