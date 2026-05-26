@@ -157,7 +157,7 @@ const PurchaseDetailsCard = ({ticket} : PurchaseDetailsCardProps) => {
                         {loadingSale ? "Carregando..." : "Finalizar Compra"}
                     </Button>
                     <h4 className='text-gray-800'>
-                        Pagamento seguro e protegido :D
+                        Pagamento seguro e protegido por nós!
                     </h4>
                 </CardFooter>                
             </form>

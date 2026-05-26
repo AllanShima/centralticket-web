@@ -1,3 +1,5 @@
+import type { MeDto } from "@/domain/Dtos/MeDto";
+import type { RefreshTokenDto } from "@/domain/Dtos/RefreshTokenDto";
 import type { IUser } from "@/domain/entities/User";
 import type { IAuthRepository } from "@/domain/repositories/IAuthRepository";
 import type { LoginRequest } from "@/domain/requests/LoginRequest";
@@ -56,7 +58,6 @@ export class AuthRepository implements IAuthRepository {
     }
 
     async login(credentials: LoginRequest) {
-        var token = '';
         const options = {
             method: 'POST',
             url: 'https://localhost:7190/api/Auth/login',
@@ -75,15 +76,22 @@ export class AuthRepository implements IAuthRepository {
         
         try {
             const { data } = await axios.request(options)
-            token = data;
+            // data retorna um objeto com dois tokens
+            // data = {
+            //     "accessToken": "...",
+            //     "refreshToken": "..."
+            // }
+            const accessToken = data.accessToken;
+            const refreshToken = data.refreshToken;
             // Salva o token no localStorage para manter o usuário logado
-            localStorage.setItem("@CentralTicket:token", token);
+            localStorage.setItem("@CentralTicket:accessToken", accessToken);
+            localStorage.setItem("@CentralTicket:refreshToken", refreshToken);
         } catch (error) {
             throw error;
         }
     }
 
-    async me(token: string): Promise<Object>{
+    async me(token: string): Promise<MeDto>{
         // retorna
         // {
         //     id: string,
@@ -99,6 +107,31 @@ export class AuthRepository implements IAuthRepository {
         try {
             const { data } = await axios.request(options)
             return data;
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async refreshToken(userId: string, refreshToken: string): Promise<RefreshTokenDto> {
+        const options = {
+            method: 'POST',
+            url: 'https://localhost:7190/api/Auth/refresh-token',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                userId: userId,
+                refreshToken: refreshToken
+            }
+        }
+
+        try {
+            const { data } = await axios.request(options)
+            const newTokens: RefreshTokenDto = {
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken
+            }
+            return newTokens;
         } catch (error) {
             throw error
         }

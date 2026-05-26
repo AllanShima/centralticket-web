@@ -1,11 +1,12 @@
-import type { ISale } from '@/domain/entities/Sale';
-import type { IUser } from '@/domain/entities/User';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthRepository } from '@/infrastructure/AuthRepository';
+import type { MeDto } from '@/domain/Dtos/MeDto';
+import type { RefreshTokenDto } from '@/domain/Dtos/RefreshTokenDto';
+import { jwtDecode } from "jwt-decode";
 
 // O modelo do contexto
 interface AuthContextType {
-  user: IUser | null;
+  user: MeDto | null;
   loading: boolean;
   logout: () => void;
 }
@@ -17,34 +18,66 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<MeDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Ao inicializar ele já verifica o token
   useEffect(() => {
     async function loadStorageData() {
-      const storedToken = localStorage.getItem("@CentralTicket:token");
+      const storedToken = localStorage.getItem("@CentralTicket:accessToken");
       
       if (storedToken) {
         try {
-          // Opcional: Se sua API tiver um endpoint '/auth/me' que valida o token e retorna o IUser
+          // Tenta pegar os dados do usuário com o token atual
           const userData = await authRepository.me(storedToken);
-          setUser(userData as IUser);
+          setUser(userData as MeDto);
         } catch (error) {
-          // Se o token estiver expirado ou inválido, limpa tudo
-          logout();
+          // --- O TOKEN EXPIROU! VAMOS TENTAR O REFRESH ---
+          
+          const storedRefreshToken = localStorage.getItem("@CentralTicket:refreshToken");
+
+          if (storedRefreshToken) {
+            try {
+              
+              const decoded: any = jwtDecode(storedToken);
+              const userId = decoded.id; // ou decoded.sub, depende de como configuraram os Claims na API
+
+              const newRefreshTokens: RefreshTokenDto = await authRepository.refreshToken(userId, storedRefreshToken);   
+              
+              await refreshNewTokens(newRefreshTokens);
+
+              const retryUserData = await authRepository.me(newRefreshTokens.accessToken);
+              setUser(retryUserData as MeDto);
+
+            } catch (refreshError) {
+              // Se o refresh token também falhou, limpa tudo
+              logout();
+            }
+          } else {
+            // Se não tinha nem refresh token guardado, limpa a sessão
+            logout();
+          }
         }
       }
-      setLoading(false);
+      setLoading(false); 
     }
+    
     loadStorageData();
   }, []);
 
+
+  // função local pra trocar os tokens
+  const refreshNewTokens = async (tokens: RefreshTokenDto) => {
+    localStorage.setItem("@CentralTicket:accessToken", tokens.accessToken);
+    localStorage.setItem("@CentralTicket:refreshToken", tokens.refreshToken);
+  }
+
   // 5. Função global de Logout
   const logout = () => {
-    localStorage.removeItem("@CentralTicket:token");
+    localStorage.removeItem("@CentralTicket:accessToken");
     setUser(null);
   };
+
+
 
   return (
     // Passamos todos os estados e funções no Value para os componentes consumirem
