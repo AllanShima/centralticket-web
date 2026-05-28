@@ -18,6 +18,7 @@ export function App() {
 
   const mainRouter = createBrowserRouter([
     {
+      index: true,
       path: '/home',
       element: 
       <ProtectedRoute>

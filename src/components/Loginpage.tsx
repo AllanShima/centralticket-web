@@ -1,17 +1,15 @@
-import React, { useState, type ReactEventHandler, type SubmitEvent } from 'react'
+import React, { useState, type SubmitEvent } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Button } from './ui/button'
 import Logo from './ui/Logo'
 import { IoEnterOutline } from "react-icons/io5";
-import { toast, Toaster } from 'sonner'
-import { useNavigate } from 'react-router'
+import { toast } from 'sonner'
 import { useLogin } from './hooks/useAuth'
 import type { LoginRequest } from '@/domain/requests/LoginRequest'
 
 const Loginpage = () => {
-    const navigate = useNavigate()
 
     const { fetchLogin, loading} = useLogin();
 
@@ -27,6 +25,7 @@ const Loginpage = () => {
             password: password
         }
 
+        // Se não tiver banco e api
         // const retrievedUser = users.find((u) => u.email == email);
         // if (!retrievedUser || retrievedUser.password !== password) {
         //     throw new Error("Usuário não encontrado.");
@@ -34,8 +33,12 @@ const Loginpage = () => {
 
         try {
             await fetchLogin(credentials);
+            
             toast.success("Usuário logado com sucesso!");
-            navigate('/home');
+
+            // navigate não funciona
+            window.open("/home");
+            
         } catch (error) {
             toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});
         }

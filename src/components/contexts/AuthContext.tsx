@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(userData as MeDto);
         } catch (error) {
           // --- O TOKEN EXPIROU! VAMOS TENTAR O REFRESH ---
-          
+
           const storedRefreshToken = localStorage.getItem("@CentralTicket:refreshToken");
 
           if (storedRefreshToken) {
@@ -74,7 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // 5. Função global de Logout
   const logout = () => {
     localStorage.removeItem("@CentralTicket:accessToken");
+    localStorage.removeItem("@CentralTicket:refreshToken");
     setUser(null);
+    setLoading(false);
   };
 
 
