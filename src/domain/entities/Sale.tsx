@@ -9,5 +9,6 @@ export interface ISale {
     orderNumber: string; // Para suporte e busca rápida
     status: 'pending' | 'confirmed' | 'cancelled' | 'refunded';
     paymentMethod?: 'pix' | 'credit_card' | 'debit_card';
+    purchasedTickets : ITicket[];
     createdAt: Date;
 }

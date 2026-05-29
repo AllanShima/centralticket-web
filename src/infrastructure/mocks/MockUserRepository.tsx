@@ -1,5 +1,5 @@
 // src/infrastructure/mocks/MockTaskRepository.ts
-import type { IUserRepository } from "@/domain/repositories/IUserRepository";
+import type { IUserRepository } from "@/infrastructure/irepositories/IUserRepository";
 import type { IUser } from "@/domain/entities/User";
 import type { ISale } from "@/domain/entities/Sale";
 import { BASE_USERS } from "./constants/mocks";

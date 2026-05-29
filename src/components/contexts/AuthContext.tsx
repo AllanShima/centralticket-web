@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AuthRepository } from '@/infrastructure/AuthRepository';
+import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
 import type { MeDto } from '@/domain/Dtos/MeDto';
 import type { RefreshTokenDto } from '@/domain/Dtos/RefreshTokenDto';
 import { jwtDecode } from "jwt-decode";
@@ -31,15 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userData = await authRepository.me(storedToken);
           setUser(userData as MeDto);
         } catch (error) {
-          // --- O TOKEN EXPIROU! VAMOS TENTAR O REFRESH ---
-
+          
+          // tentando refresh quando o token estiver expirado
           const storedRefreshToken = localStorage.getItem("@CentralTicket:refreshToken");
 
           if (storedRefreshToken) {
             try {
-              
+              // decodificando o token do usuário guardado
               const decoded: any = jwtDecode(storedToken);
-              const userId = decoded.id; // ou decoded.sub, depende de como configuraram os Claims na API
+              const userId = decoded.id;
 
               const newRefreshTokens: RefreshTokenDto = await authRepository.refreshToken(userId, storedRefreshToken);   
               
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               setUser(retryUserData as MeDto);
 
             } catch (refreshError) {
-              // Se o refresh token também falhou, limpa tudo
+              // se o refresh falhou, limpa tudo
               logout();
             }
           } else {
@@ -64,14 +64,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadStorageData();
   }, []);
 
-
-  // função local pra trocar os tokens
+  // função local pra trocar os tokens, substitui eles
   const refreshNewTokens = async (tokens: RefreshTokenDto) => {
     localStorage.setItem("@CentralTicket:accessToken", tokens.accessToken);
     localStorage.setItem("@CentralTicket:refreshToken", tokens.refreshToken);
   }
 
-  // 5. Função global de Logout
+  // função global de logout
   const logout = () => {
     localStorage.removeItem("@CentralTicket:accessToken");
     localStorage.removeItem("@CentralTicket:refreshToken");
@@ -79,10 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   };
 
-
-
   return (
-    // Passamos todos os estados e funções no Value para os componentes consumirem
     <AuthContext.Provider value={{ user, loading, logout }}>
       {children}
     </AuthContext.Provider>
@@ -161,15 +157,10 @@ export function useAuth() {
 
 
 //   useEffect(() => {
-
 //     if (fetchedUser) {
-
 //       console.log(fetchedUser);
-
 //       setUser(fetchedUser);
-
 //     }
-
 //   }, [fetchedUser])
 
 

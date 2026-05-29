@@ -37,7 +37,7 @@ const Loginpage = () => {
             toast.success("Usuário logado com sucesso!");
 
             // navigate não funciona
-            window.open("/home");
+            window.location.replace("/home");
             
         } catch (error) {
             toast.error("Algum erro inexplicavel ocorreu...", {description: String(error)});

@@ -1,5 +1,5 @@
 import type { ISale } from "@/domain/entities/Sale";
-import type ISaleRepository from "@/domain/repositories/ISaleRepository";
+import type ISaleRepository from "@/infrastructure/irepositories/ISaleRepository";
 import { BASE_SALES } from "./constants/mocks";
 
 // Helper to simulate network latency

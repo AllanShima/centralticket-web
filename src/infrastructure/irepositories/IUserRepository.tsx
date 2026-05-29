@@ -1,5 +1,5 @@
-import type { ISale } from "../entities/Sale";
-import type { IUser } from "../entities/User";
+import type { ISale } from "../../domain/entities/Sale";
+import type { IUser } from "../../domain/entities/User";
 
 export interface IUserRepository {
     getAll(): Promise<IUser[]>;

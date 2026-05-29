@@ -1,6 +1,8 @@
 import type { IUser } from "@/domain/entities/User";
-import type { IUserRepository } from "@/domain/repositories/IUserRepository";
+import type { IUserRepository } from "@/infrastructure/irepositories/IUserRepository";
 import axios from "axios";
+
+// Funções Request do Contexto de PROFILE da Api
 
 // Configuração do axios
 const api = axios.create({
@@ -59,4 +61,3 @@ export class UserRepository {
 //     }
 //   }
 // }
-

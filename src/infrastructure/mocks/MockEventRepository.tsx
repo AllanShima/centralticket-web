@@ -1,5 +1,5 @@
 import type { IEvent } from "@/domain/entities/Event";
-import type IEventRepository from "@/domain/repositories/IEventRepository";
+import type IEventRepository from "@/infrastructure/irepositories/IEventRepository";
 import { BASE_EVENTS } from "./constants/mocks";
 
 // Helper to simulate network latency

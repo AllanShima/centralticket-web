@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router';
 import UserInfoCard from './UserInfoCard';
 import PurchasedTicketsCard from './PurchasedTicketsCard';
 import { useAuth } from './contexts/AuthContext';
-import { useSalesByUid } from './hooks/useSales';
+// import { useSalesByUid } from './hooks/useSales';
 import { useUserByUid } from './hooks/useUsers';
 
 const Profilepage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   // const { user, loading: userLoading } = useAuth();
   const { fetchUser, user, loading: userLoading } = useUserByUid();
 

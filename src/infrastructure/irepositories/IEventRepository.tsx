@@ -1,4 +1,4 @@
-import type { IEvent } from "../entities/Event";
+import type { IEvent } from "../../domain/entities/Event";
 
 export default interface IEventRepository {
     getAll(): Promise<IEvent[]>;

@@ -4,9 +4,9 @@ import { toast } from 'sonner';
 import { MockUserRepository } from '@/infrastructure/mocks/MockUserRepository';
 import type { IUser } from '@/domain/entities/User';
 import type { ISale } from '@/domain/entities/Sale';
-import { UserRepository } from '@/infrastructure/UserRepository';
+import { UserRepository } from '@/infrastructure/repositories/UserRepository';
 import type { RegisterRequest } from '@/domain/requests/RegisterRequest';
-import { AuthRepository } from '@/infrastructure/AuthRepository';
+import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
 import type { LoginRequest } from '@/domain/requests/LoginRequest';
 
 
@@ -56,7 +56,7 @@ export function useRegister() {
       setLoading(true);
       await repo.register(credentials);
     } catch (error) {
-      throw new Error(String(error));
+      throw error;
     } finally {
       setLoading(false);
     }

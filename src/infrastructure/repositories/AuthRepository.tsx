@@ -1,33 +1,12 @@
 import type { MeDto } from "@/domain/Dtos/MeDto";
 import type { RefreshTokenDto } from "@/domain/Dtos/RefreshTokenDto";
 import type { IUser } from "@/domain/entities/User";
-import type { IAuthRepository } from "@/domain/repositories/IAuthRepository";
+import type { IAuthRepository } from "@/infrastructure/irepositories/IAuthRepository";
 import type { LoginRequest } from "@/domain/requests/LoginRequest";
 import type { RegisterRequest } from "@/domain/requests/RegisterRequest";
 import axios from "axios";
 
-// Configuração do axios
-const api = axios.create({
-    baseURL: "https://localhost:7190/api",
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
-
-api.interceptors.request.use(
-    (config) => {
-        // Busca o token salvo no localStorage (use a mesma chave do login)
-        const token = localStorage.getItem("@CentralTicket:token");
-        if (token) {
-            // Injeta o token dinamicamente no cabeçalho de autorização
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+// Funções Request do Contexto de AUTH da Api
 
 export class AuthRepository implements IAuthRepository {
     
