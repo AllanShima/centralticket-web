@@ -51,7 +51,7 @@ export function App() {
   ]);
 
   return (
-    <div className="container w-screen h-screen mx-auto text-center relative z-10 bg-gray-100">
+    <div className="w-screen h-screen text-center relative z-10 bg-gray-100">
       <RouterProvider router={mainRouter}/>
       <Toaster/>
     </div>

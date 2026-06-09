@@ -1,32 +1,11 @@
-import { useEffect, useState } from 'react';
-import type { IEvent } from '@/domain/entities/Event';
-import { toast } from 'sonner';
-import { MockUserRepository } from '@/infrastructure/mocks/MockUserRepository';
+import { useState } from 'react';
+import { UserRepository } from '@/infrastructure/repositories/UserRepository';
 import type { IUser } from '@/domain/entities/User';
 import type { ISale } from '@/domain/entities/Sale';
-import { UserRepository } from '@/infrastructure/repositories/UserRepository';
+import type { IUserTicket } from '@/domain/entities/UserTicket';
+import { toast } from 'sonner';
 
-// Instanciamos fora para não recriar a cada renderização
-const repo = new MockUserRepository();
-
-export function useUsers() {
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const data = await repo.getAll();  // é uma promise, ent precisa do try catch e await
-      setUsers(data);
-    } catch (error) {
-      console.error("Erro ao buscar usuário:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { fetchUsers, users, loading };
-}
+const repo = new UserRepository();
 
 export function useUserByUid() {
   const [user, setUser] = useState<IUser>();
@@ -35,9 +14,14 @@ export function useUserByUid() {
   const fetchUser = async (userId: string) => {
     try {
       setLoading(true);
-      const data = await repo.getByUid(userId);
+      const storedToken = localStorage.getItem("@CentralTicket:accessToken");
+      if (!storedToken) {
+        throw new Error("Não há tokens guardados!");
+      }
+      const data = await repo.getByUid(userId, storedToken);
       setUser(data);
     } catch (error) {
+      toast.error("Erro ao buscar usuário:", { description: String(error) });
       console.error("Erro ao buscar usuário:", error);
     } finally {
       setLoading(false);
@@ -47,37 +31,50 @@ export function useUserByUid() {
   return { fetchUser, user, loading };
 }
 
-
-export function useSaveUser() {
+export function useTicketsBySaleId() {
+  const [tickets, setTickets] = useState<IUserTicket[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchSaveUser = async (user: IUser) => {
+  const fetchTickets = async (saleId: string) => {
     try {
       setLoading(true);
-      await repo.save(user);
+      const storedToken = localStorage.getItem("@CentralTicket:accessToken");
+      if (!storedToken) {
+        throw new Error("Não há tokens guardados!");
+      }
+      const data = await repo.getTicketsBySaleId(saleId, storedToken);
+      setTickets(data);
     } catch (error) {
-      console.error("Erro ao salvar novo usuário:", error);
+      toast.error("Erro ao buscar ingressos da venda:", { description: String(error) });
+      console.error("Erro ao buscar ingressos da venda:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  return { fetchSaveUser, loading };
+  return { fetchTickets, tickets, loading };
 }
 
-export function useUpdateUserById() {
+export function useSalesByUserId() {
+  const [sales, setSales] = useState<ISale[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchSalesById = async (userId: string, newSale: ISale) => {
+  const fetchSales = async (userId: string) => {
     try {
       setLoading(true);
-      await repo.updateSalesById(userId, newSale);
+      const storedToken = localStorage.getItem("@CentralTicket:accessToken");
+      if (!storedToken) {
+        throw new Error("Não há tokens guardados!");
+      }
+      const data = await repo.getSalesByUserId(userId, storedToken);
+      setSales(data);
     } catch (error) {
-      console.error("Erro ao salvar novo usuário:", error);
+      toast.error("Erro ao buscar compras do usuário:", { description: String(error) });
+      console.error("Erro ao buscar compras do usuário:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  return { fetchSalesById, loading };
+  return { fetchSales, sales, loading };
 }

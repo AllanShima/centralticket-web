@@ -2,7 +2,7 @@ export interface IEvent {
     id?: string;
     title: string;
     description: string;
-    status: 'available' | 'shortly' | 'soldout';
+    status?: 'available' | 'shortly' | 'soldout';
     price: number;
     start_date: Date;
     end_date: Date;

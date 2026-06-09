@@ -1,3 +1,5 @@
+import type { PaymentMethodEnum } from "../enums/PaymentMethodEnum";
+import type { SaleStatusEnum } from "../enums/SaleStatusEnum";
 import type { ITicket } from "./Ticket";
 
 export interface ISale {
@@ -7,8 +9,8 @@ export interface ISale {
     total?: number;
     amount: number;
     orderNumber: string; // Para suporte e busca rápida
-    status: 'pending' | 'confirmed' | 'cancelled' | 'refunded';
-    paymentMethod?: 'pix' | 'credit_card' | 'debit_card';
+    status: SaleStatusEnum;
+    paymentMethod?: PaymentMethodEnum;
     purchasedTickets : ITicket[];
     createdAt: Date;
 }

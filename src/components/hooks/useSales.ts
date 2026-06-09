@@ -1,12 +1,30 @@
 import { useEffect, useState } from 'react';
-import { MockEventRepository } from '@/infrastructure/mocks/MockEventRepository';
-import type { IEvent } from '@/domain/entities/Event';
-import { toast } from 'sonner';
-import { MockSaleRepository } from '@/infrastructure/mocks/MockSaleRepository';
-import type { ISale } from '@/domain/entities/Sale';
 import { SaleRepository } from '@/infrastructure/repositories/SaleRepository';
+import type { ISale } from '@/domain/entities/Sale';
+import type { CreateSaleDto } from '@/domain/Dtos/CreateSaleDto';
+import { toast } from 'sonner';
 
-const repo = new SaleRepository()
+const repo = new SaleRepository();
+
+export function useSales() {
+  const [sales, setSales] = useState<ISale[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchSales = async () => {
+    try {
+      setLoading(true);
+      const data = await repo.getAll();
+      setSales(data);
+    } catch (error) {
+      toast.error("Erro ao buscar vendas:", { description: String(error) });
+      console.error("Erro ao buscar vendas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { fetchSales, sales, loading };
+}
 
 export function useSalesById() {
   const [sale, setSale] = useState<ISale>();
@@ -19,11 +37,11 @@ export function useSalesById() {
       if (!storedToken) {
         throw new Error("Não há tokens guardados!");
       }
-      const data = await repo.getById(saleId, storedToken);  // é uma promise, ent precisa do try catch e await
+      const data = await repo.getById(saleId, storedToken);
       setSale(data);
     } catch (error) {
-      toast.error("Erro ao buscar evento:", {description: String(error)});
-      console.error("Erro ao buscar evento:", error);
+      toast.error("Erro ao buscar venda:", { description: String(error) });
+      console.error("Erro ao buscar venda:", error);
     } finally {
       setLoading(false);
     }
@@ -35,18 +53,19 @@ export function useSalesById() {
 export function useSaveSale() {
   const [loading, setLoading] = useState(false);
 
-  const fetchSale = async (sale: ISale) => {
+  const fetchSale = async (saleData: CreateSaleDto) => {
     try {
       setLoading(true);
       const storedToken = localStorage.getItem("@CentralTicket:accessToken");
       if (!storedToken) {
         throw new Error("Não há tokens guardados!");
       }
-      await repo.save(sale, storedToken);  // é uma promise, ent precisa do try catch e await
-      //talvez retorna success
+      const message = await repo.save(saleData, storedToken);
+      toast.success(message);
+      return message;
     } catch (error) {
-      toast.error("Erro ao salvar novo evento:", {description: String(error)});
-      console.error("Erro ao salvar novo evento:", error);
+      toast.error("Erro ao salvar nova venda:", { description: String(error) });
+      console.error("Erro ao salvar nova venda:", error);
     } finally {
       setLoading(false);
     }
@@ -65,10 +84,11 @@ export function useConfirmSale() {
       if (!storedToken) {
         throw new Error("Não há tokens guardados!");
       }
-      await repo.confirm(saleId, storedToken);  // é uma promise, ent precisa do try catch e await
-      //talvez retorna success
+      const message = await repo.confirm(saleId, storedToken);
+      toast.success(message);
+      return message;
     } catch (error) {
-      toast.error("Erro ao confirmar venda:", {description: String(error)});
+      toast.error("Erro ao confirmar venda:", { description: String(error) });
       console.error("Erro ao confirmar venda:", error);
     } finally {
       setLoading(false);
@@ -88,10 +108,11 @@ export function useCancelSale() {
       if (!storedToken) {
         throw new Error("Não há tokens guardados!");
       }
-      await repo.cancel(saleId, storedToken);  // é uma promise, ent precisa do try catch e await
-      //talvez retorna success
+      const message = await repo.cancel(saleId, storedToken);
+      toast.success(message);
+      return message;
     } catch (error) {
-      toast.error("Erro ao cancelar venda:", {description: String(error)});
+      toast.error("Erro ao cancelar venda:", { description: String(error) });
       console.error("Erro ao cancelar venda:", error);
     } finally {
       setLoading(false);
@@ -100,65 +121,3 @@ export function useCancelSale() {
 
   return { fetchStatus, loading };
 }
-
-
-
-// Instanciamos fora para não recriar a cada renderização
-// const repo = new MockSaleRepository();
-
-// export function useSalesByUid() {
-//   const [sales, setSales] = useState<ISale[]>([]);
-//   const [loading, setLoading] = useState(false);
-
-//   const fetchSales = async (userId: string) => {
-//     try {
-//       setLoading(true);
-//       const data = await repo.getAllByUserId(userId);  // é uma promise, ent precisa do try catch e await
-//       setSales(data);
-//     } catch (error) {
-//       toast.error("Erro ao buscar eventos:", {description: String(error)});
-//       console.error("Erro ao buscar eventos:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return { fetchSales, sales, loading };
-// }
-
-// export function useAddSale() {
-//   const [loading, setLoading] = useState(false);
-
-//   const fetchSave = async (sale: ISale) => {
-//     try {
-//       setLoading(true);
-//       await repo.save(sale);
-//     } catch (error) {
-//         toast.error("Erro ao salvar nova venda:", {description: String(error)});
-//         console.error("Erro ao salvar nova venda:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return { fetchSave, loading };
-// }
-
-// export function useUpdateSale() {
-//   const [loading, setLoading] = useState(false);
-
-//   const fetchUpdateStatus = async (saleId: string, newStatus: ISale['status']) => {
-//     try {
-//       setLoading(true);
-//       await repo.updateStatusById(saleId, newStatus);
-//     } catch (error) {
-//         toast.error("Erro ao salvar nova venda:", {description: String(error)});
-//         console.error("Erro ao salvar nova venda:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return { fetchUpdateStatus, loading };
-// }
-

@@ -1,9 +1,9 @@
 import type { ISale } from "../../domain/entities/Sale";
 import type { IUser } from "../../domain/entities/User";
+import type { IUserTicket } from "@/domain/entities/UserTicket";
 
 export interface IUserRepository {
-    getAll(): Promise<IUser[]>;
-    getByUid(userId: string): Promise<IUser>;
-    save(user: IUser): Promise<IUser>;
-    updateSalesById(userId: string, newSale: ISale): Promise<IUser>;
+    getByUid(userId: string, token: string): Promise<IUser>;
+    getTicketsBySaleId(saleId: string, token: string): Promise<IUserTicket[]>;
+    getSalesByUserId(userId: string, token: string): Promise<ISale[]>;
 }
