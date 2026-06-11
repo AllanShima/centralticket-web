@@ -70,12 +70,7 @@ export class AuthRepository implements IAuthRepository {
         }
     }
 
-    async me(token: string): Promise<MeDto>{
-        // retorna
-        // {
-        //     id: string,
-        //     name: string
-        // }
+    public async me(token: string): Promise<MeDto>{
         const options = {
             method: 'GET',
             url: 'https://localhost:7190/api/Auth/me',
@@ -85,7 +80,11 @@ export class AuthRepository implements IAuthRepository {
         }
         try {
             const { data } = await axios.request(options)
-            return data;
+            const meData: MeDto = {
+                id: data.id,
+                name: data.name
+            }
+            return meData;
         } catch (error) {
             throw error
         }

@@ -6,6 +6,5 @@ export interface IUser {
     email: string;
     password?: string; // Opcional dependendo de onde for usada (ex: frontend)
     pfpUrl?: string;
-    sales?: ISale[]; 
-    createdAt: Date;
+    createdAt?: Date;
 }

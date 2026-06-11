@@ -6,18 +6,19 @@ import { IoTicketOutline } from "react-icons/io5";
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router';
 import TicketsCard from './TicketsCard';
+import type { IUserSale } from '@/domain/entities/UserSale';
 
 interface PurchasedTicketsCardProps {
-    sales?: ISale[]
+    sales: IUserSale[]
 }
 
 const PurchasedTicketsCard = ({sales} : PurchasedTicketsCardProps) => {
     const navigate = useNavigate();
     if (!sales) {
-        toast.error("Erro ao carregar ingressos...");
+        toast.error("Erro ao carregar os ingressos...");
         return (
             <Card className="flex w-full h-full justify-center items-center p-8">
-                Ingressos não foram carregados...
+                Erro ao carregar os ingressos do usuário...
             </Card>
         )
     }

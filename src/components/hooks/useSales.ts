@@ -51,27 +51,29 @@ export function useSalesById() {
 }
 
 export function useSaveSale() {
+  const [sale, setSale] = useState<ISale>();
   const [loading, setLoading] = useState(false);
 
-  const fetchSale = async (saleData: CreateSaleDto) => {
+  const fetchSale = async (saleData: CreateSaleDto): Promise<ISale> => {
     try {
       setLoading(true);
       const storedToken = localStorage.getItem("@CentralTicket:accessToken");
       if (!storedToken) {
         throw new Error("Não há tokens guardados!");
       }
-      const message = await repo.save(saleData, storedToken);
-      toast.success(message);
-      return message;
+      const newSale = await repo.save(saleData, storedToken);
+      setSale(newSale);
+      
+      return newSale; // Retorno crucial para o toast.promise receber o objeto com ID
     } catch (error) {
-      toast.error("Erro ao salvar nova venda:", { description: String(error) });
       console.error("Erro ao salvar nova venda:", error);
+      throw error; // Repassa o erro para o toast.promise renderizar o bloco 'error'
     } finally {
       setLoading(false);
     }
   };
 
-  return { fetchSale, loading };
+  return { fetchSale, loading, sale };
 }
 
 export function useConfirmSale() {

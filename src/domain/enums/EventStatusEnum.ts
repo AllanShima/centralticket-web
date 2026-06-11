@@ -1,5 +1,5 @@
 export enum EventStatusEnum {
-    Available,
-    Shortly,
-    SoldOut
+    Available = "available",
+    Shortly = "shortly",
+    SoldOut = "soldout"
 }

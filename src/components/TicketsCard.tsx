@@ -6,40 +6,36 @@ import { FaRegCalendar } from 'react-icons/fa'
 import { MdOutlineLocationOn } from "react-icons/md";
 import { LuTicket } from "react-icons/lu";
 import { FaRegCreditCard } from "react-icons/fa6";
+import type { IUserSale } from '@/domain/entities/UserSale'
+import { toast } from 'sonner'
 
 interface TicketsCardProps {
-    sale: ISale
+    sale: IUserSale
 }
 
 const TicketsCard = ({sale} : TicketsCardProps) => {
-    const { fetchEventById, event, loading: loadingEvent } = useEvent();
 
-    const dateOfPayment = sale.createdAt.toLocaleDateString('pt-BR');
-    const price = sale.total?.toFixed(2) || "undefined";
-    const start_date = event?.start_date.toLocaleDateString('pt-BR');
-    const end_date = event?.end_date.toLocaleDateString('pt-BR');
-
-    const payment_option = {
-        'pix' : 'Pix',
-        'credit_card': 'Cartão de Crédito',
-        'debit_card': 'Cartão de Débito'
-    }
-
-    const payment = sale.paymentMethod ? payment_option[sale.paymentMethod] : "undefined";
-
-    useEffect(() => {
-        if (sale.ticket?.eventId) {
-            fetchEventById(sale.ticket?.eventId)
-        }
-    }, [sale])
-
-    if (loadingEvent) {
+    if (!sale) {
+        toast.error("Erro ao carregar o ingresso");
         return (
             <div className='flex p-8 justify-center items-center'>
-                Carregando ticket...
+                Erro ao carregar o ingresso...
             </div>
         )
     }
+
+    // é garantido que vou ter pelo menos um ticket
+    const randomTicket = sale.purchasedTickets[0]!;
+
+    const location = randomTicket.eventLocation;
+    const imageUrl = randomTicket.eventImageUrl;
+    const title = randomTicket.title;
+    const dateOfPayment = sale.createdAt!.toLocaleDateString('pt-BR');
+    const price = sale.total.toFixed(2);
+    const start_date = randomTicket.eventStartDate.toLocaleDateString('pt-BR');
+    const end_date = randomTicket.eventEndDate.toLocaleDateString('pt-BR');
+
+    const payment = sale.paymentMethod;
 
     return (
         <Card className='flex flex-col w-full hover:shadow-md transition'>
@@ -47,14 +43,14 @@ const TicketsCard = ({sale} : TicketsCardProps) => {
                 <CardHeader className='flex w-80 h-fit'>
                     <div className='w-full h-35 overflow-hidden rounded-2xl'>
                         <img 
-                        src={event?.imageUrl} 
+                        src={imageUrl} 
                         className='w-full h-full object-cover'
-                        alt={event?.title}/>                
+                        alt={`Imagem de ${title}`}/>                
                     </div>
                 </CardHeader>
                 <CardContent className='flex flex-col w-full gap-3 text-gray-600'>
                     <CardTitle className='text-start text-xl text-black'>
-                        {sale.ticket?.title}
+                        {title}
                     </CardTitle>
                     {/* Datas */}
                     <div className='flex justify-center items-center w-fit gap-4'>
@@ -75,7 +71,7 @@ const TicketsCard = ({sale} : TicketsCardProps) => {
                         <span className='flex gap-2 justify-center items-center'>
                             <MdOutlineLocationOn/>
                             <h4>
-                                {event?.location}
+                                {location}
                             </h4>
                         </span>
                     </div>
@@ -83,7 +79,7 @@ const TicketsCard = ({sale} : TicketsCardProps) => {
                         <span className='flex gap-2 justify-center items-center'>
                             <LuTicket/>
                             <h4>
-                                {sale.amount} ingresso(s)
+                                {sale.purchasedTickets.length} ingresso(s)
                             </h4>
                         </span>
                     </div>

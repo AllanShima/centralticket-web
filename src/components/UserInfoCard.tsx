@@ -1,25 +1,37 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
 import type { IUser } from '@/domain/entities/User'
 import AvatarLogo from './ui/avatar-logo'
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegCalendar } from "react-icons/fa";
+import { toast } from 'sonner';
+import type { IUserSale } from '@/domain/entities/UserSale';
 
 interface UserInfoCardProps {
   user?: IUser
+  sales?: IUserSale[]
 }
 
-const UserInfoCard = ({user} : UserInfoCardProps) => {
-
-  const createdAt = user?.createdAt.toLocaleDateString('pt-BR')
+const UserInfoCard = ({user, sales} : UserInfoCardProps) => {
 
   if (!user) {
     return (
       <Card className='w-full h-full justify-center items-center p-8'>
-        Carregando usuário
+        Usuário não carregado
       </Card>
     )
   }
+
+  const createdAt = user.createdAt!.toLocaleDateString('pt-BR');
+
+  const totalSales = sales?.length;
+  let totalTickets = 0;
+  if (sales != undefined) {
+    for (const sale of sales) {
+      totalTickets += sale?.purchasedTickets.length || 0;
+    }
+  }
+
 
   return (
     <Card>
@@ -52,13 +64,21 @@ const UserInfoCard = ({user} : UserInfoCardProps) => {
         </div>
         <hr />
       </CardContent>
-      <CardFooter>
+      <CardFooter className='flex flex-col'>
         <span className='flex flex-row w-full justify-between'>
           <h4 className='text-gray-700'>
             Total de ingressos: 
           </h4>
           <h4 className='text-black'>
-            {user.sales?.length}
+            {totalTickets}
+          </h4>
+        </span>
+        <span className='flex flex-row w-full justify-between'>
+          <h4 className='text-gray-700'>
+            Total de compras realizadas: 
+          </h4>
+          <h4 className='text-black'>
+            {totalSales}
           </h4>
         </span>
       </CardFooter>

@@ -8,9 +8,10 @@ import NewEventModal from './NewEventModal'
 import { useEvents } from './hooks/useEvents'
 import type { IEvent } from '@/domain/entities/Event'
 import * as motion from "motion/react-client"
+import { useMe } from './hooks/useAuth'
 
 const Homepage = () => {
-    const { fetchEvents, events : fetchedEvents, loading } = useEvents();
+    const { fetchEvents, events : fetchedEvents, loading: loadingEvents } = useEvents();
     const [events, setEvents] = useState<IEvent[]>([]);
 
     useEffect(() => {
@@ -38,6 +39,14 @@ const Homepage = () => {
     const item = {
         hidden: { opacity: 0, scale: 0.95, y: 50 },
         show: { opacity: 1, scale: 1,  y: 0 }
+    }
+
+    if (loadingEvents) {
+        return (
+            <div className='text-black'>
+                Carregando Eventos...
+            </div>
+        )
     }
 
     return (
@@ -77,7 +86,7 @@ const Homepage = () => {
                         <motion.div variants={item} key={event.id}>
                             <HomeEventCard event={event}/>                                
                         </motion.div>
-                    ))}          
+                    ))}
                 </motion.div>
 
             </div>

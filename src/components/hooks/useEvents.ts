@@ -50,10 +50,16 @@ export function useEvent() {
 export function useSaveEvent() {
   const [loading, setLoading] = useState(false);
 
-  const fetchSaveEvent = async (event: IEvent, token: string) => {
+  const fetchSaveEvent = async (event: IEvent) => {
     try {
       setLoading(true);
-      const data = await repo.save(event, token);
+
+      const storedToken = localStorage.getItem("@CentralTicket:accessToken");
+      if (!storedToken) {
+        throw new Error("Não há tokens guardados!");
+      }
+
+      const data = await repo.save(event, storedToken);
       toast.success("Evento criado com sucesso!");
       return data;
     } catch (error) {

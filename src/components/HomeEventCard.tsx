@@ -7,47 +7,44 @@ import { BsCart3 } from "react-icons/bs";
 import { FaRegCalendar } from "react-icons/fa";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { useNavigate } from 'react-router';
+import { EventStatusEnum } from '@/domain/enums/EventStatusEnum';
+import { toast } from 'sonner';
 
 interface HomeEventCardProps {
-  event: IEvent | undefined
+  event?: IEvent | undefined
 }
 
 const HomeEventCard = ({event} : HomeEventCardProps) => {
 
   const navigate = useNavigate();
 
-  const price = event?.price.toFixed(2) || "undefined";
-  const start_date = event?.start_date.toLocaleDateString('pt-BR');
-
-  const statusTranslated = {
-    "available": "disponível",
-    "shortly": "em breve",
-    "soldout": "esgotado"
-  }
-
   if (!event) {
+    toast.error("Erro ao carregar evento!");
     return (
       <Card>
-        <CardTitle>
+        <CardTitle className='justify-center items-center'>
           Evento não encontrado...
         </CardTitle>
       </Card>
     )
   }
 
+  const price = event?.price.toFixed(2) || "undefined";
+  const start_date = event?.start_date.toLocaleDateString('pt-BR');
+
   return (
     <Card className='relative mx-auto w-full h-full max-w-sm pt-0 rounded-2xl shadow-lg'>
-          <div className='absolute inset-0 z-30 aspect-video bg-black/35 rounded-t-2xl'/>
+        <div className='absolute inset-0 z-30 aspect-video bg-black/35 rounded-t-2xl'/>
           <img 
           className="relative z-20 aspect-video w-full object-cover dark:brightness-40 rounded-t-2xl"
           src={event.imageUrl} />
           <CardHeader className='w-full h-full'>
             <CardAction>
               <Badge variant="secondary">
-                {statusTranslated[event.status]}
+                {event.status!}
               </Badge>
             </CardAction>
-            <CardTitle className='w-fit h-full'>
+            <CardTitle className='w-fit h-full text-start'>
               {event.title}
             </CardTitle>
             <CardDescription className='w-fit h-full text-start'>
@@ -75,24 +72,27 @@ const HomeEventCard = ({event} : HomeEventCardProps) => {
                 A partir de
               </CardDescription>
               <h3 className='w-fit'>
-                R$ {price}
+                R$ {price} cada
               </h3>
             </div>
-            {event.status === "available" ? (
+            {event.status! === EventStatusEnum.Available ? (
               <Button onClick={() => navigate(`/payment/${event?.id}`)} className="w-fit h-fit px-5 py-3">
                 <BsCart3/>
                 Comprar
               </Button>
-            ) : (
-              <Button disabled variant="ghost" className="w-fit h-fit px-5 py-3">
+            ) : event.status! === EventStatusEnum.SoldOut ? (
+              <Button disabled variant="destructive" className="w-fit h-fit px-5 py-3">
                 <BsCart3/>
                 Esgotado
               </Button>
+            ) : (
+              <Button disabled variant="ghost" className="w-fit h-fit px-5 py-3">
+                <BsCart3/>
+                Em breve
+              </Button>
             )}
-
           </CardFooter>
-      </Card>
-
+    </Card>
   )
 }
 

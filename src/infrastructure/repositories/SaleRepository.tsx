@@ -86,7 +86,7 @@ export class SaleRepository implements ISaleRepository {
         }
     }
 
-    public async save(saleData: CreateSaleDto, token: string): Promise<string> {
+    public async save(saleData: CreateSaleDto, token: string): Promise<ISale> {
         const options = {
             method: 'POST',
             url: 'https://localhost:7190/api/Sales/Create',
@@ -107,8 +107,31 @@ export class SaleRepository implements ISaleRepository {
         }
 
         try {
-            await axios.request(options)
-            return "Venda nova Criada!";
+            const { data } = await axios.request(options)
+            const mappedTickets: ITicket[] = data.purchasedTickets?.map((ticketApi: any) => ({
+                id: ticketApi.id,
+                value: ticketApi.value?.value,
+                category: ticketApi.category,
+                kind: ticketApi.kind,
+                eventId: ticketApi.eventId,
+                saleId: ticketApi.saleId,
+                status: ticketApi.status,
+                createdAt: new Date(ticketApi.createdAt)
+            })) || [];
+
+            const createdSale: ISale = {
+                id: data.id,
+                userId: data.customerId,
+                total: data.totalValue?.value,
+                amount: mappedTickets.length,
+                orderNumber: data.orderCode?.value,
+                status: data.status,
+                paymentMethod: data.paymentMethod,
+                purchasedTickets: mappedTickets,
+                createdAt: new Date(data.createdAt)
+            };
+
+            return createdSale;
         } catch (error) {
             throw error;
         }

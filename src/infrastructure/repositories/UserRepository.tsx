@@ -1,6 +1,7 @@
 import type { ISale } from "@/domain/entities/Sale";
 import type { ITicket } from "@/domain/entities/Ticket";
 import type { IUser } from "@/domain/entities/User";
+import type { IUserSale } from "@/domain/entities/UserSale";
 import type { IUserTicket } from "@/domain/entities/UserTicket";
 import type { IUserRepository } from "@/infrastructure/irepositories/IUserRepository";
 import axios from "axios";
@@ -61,6 +62,8 @@ export class UserRepository implements IUserRepository {
                 title: ticket.title,
                 status: ticket.status,
                 eventTitle: ticket.eventTitle,
+                eventLocation: ticket.eventLocation,
+                eventImageUrl: ticket.eventImageUrl,
                 eventStartDate: new Date(ticket.eventStartDate),
                 eventEndDate: new Date(ticket.eventEndDate)
             }));
@@ -71,10 +74,10 @@ export class UserRepository implements IUserRepository {
         }
     }
 
-    public async getSalesByUserId(userId: string, token: string): Promise<ISale[]> {
+    public async getSalesByUserId(userId: string, token: string): Promise<IUserSale[]> {
         const options = {
             method: 'GET',
-            url: `https://localhost:7190/api/Profile/${userId}/GetSaleByUserId`,
+            url: `https://localhost:7190/api/Profile/${userId}/GetSalesByUserId`,
             headers: {
                 Accept: '*/*',
                 Authorization: `Bearer ${token}`
@@ -82,13 +85,16 @@ export class UserRepository implements IUserRepository {
         }
 
         try {
+            
             const { data } = await axios.request(options)
-            const sales: ISale[] = data.map((sale: any) => {
-                const mappedTickets = sale.purchasedTickets?.map((ticket: any) => ({
+            const sales: IUserSale[] = data.map((sale: any) => {
+                const mappedTickets = sale.purchasedTickets?.map((ticket: IUserTicket) => ({
                     id: ticket.id,
                     title: ticket.title,
                     status: ticket.status,
                     eventTitle: ticket.eventTitle,
+                    eventLocation: ticket.eventLocation,
+                    eventImageUrl: ticket.eventImageUrl,
                     eventStartDate: new Date(ticket.eventStartDate),
                     eventEndDate: new Date(ticket.eventEndDate)
                 })) || [];

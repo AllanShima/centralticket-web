@@ -45,19 +45,32 @@ const NewEventModal = ({ setOpen, setEvents }: NewEventModalProps) => {
             description: String(data.description || ""),
             location: String(data.location || ""),
             imageUrl: String(data.imageUrl || ""),
-            status: 'available',
-            price: Number(data.price || 0), // Add defaults for missing IEvent fields
+            price: Number(data.price || 0),
             start_date: startDate,
             end_date: endDate,
-            amount_tickets: Number(data.amount_tickets || 0),
-            remaining_tickets: Number(data.amount_tickets || 0),
-            createdAt: new Date(),
+            amount_tickets: Number(data.amount_tickets || 0)
         }
 
+        const isPeriodValid = endDate > startDate;
+
+        const isStartDateValid = startDate > new Date();
+
         try {
-            // Função pra guardar o novo evento
-            await fetchSaveEvent(newEvent); // salva no 'banco'
-            setEvents((prev) => [...prev, newEvent]); // salva na lista
+
+            if (!isPeriodValid) {
+                throw new Error("A data de término deve ser posterior à data de início!");
+            }
+            if (!isStartDateValid) {
+                throw new Error("A data de início deve ser posterior à hoje!");
+            }
+            
+            const savedEvent = await fetchSaveEvent(newEvent); // salva no 'banco'
+
+            if (!savedEvent) {
+                throw new Error("Falha do retorno do novo evento salvo.");
+            }
+
+            setEvents((prev) => [...prev, savedEvent]); // salva na lista
 
             toast.success("Novo evento adicionado!");
             setOpen(false);

@@ -8,6 +8,7 @@ import { UserRepository } from '@/infrastructure/repositories/UserRepository';
 import type { RegisterRequest } from '@/domain/requests/RegisterRequest';
 import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
 import type { LoginRequest } from '@/domain/requests/LoginRequest';
+import type { MeDto } from '@/domain/Dtos/MeDto';
 
 
 const repo = new AuthRepository();
@@ -63,4 +64,26 @@ export function useRegister() {
   };
 
   return { fetchRegister, loading };
+}
+
+// retorna o id e o nome do usuário logado
+export function useMe() {
+  const storedToken = localStorage.getItem("@CentralTicket:accessToken");
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<MeDto>();
+
+  const fetchMe = async () => {
+    try {
+      if (!storedToken) {
+        throw new Error("Token não encontrado, usuário deslogado?");
+      }
+      setLoading(true);
+      setData(await repo.me(storedToken));
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  }
+  return { fetchMe, data, loading };
 }

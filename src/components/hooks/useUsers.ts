@@ -4,6 +4,7 @@ import type { IUser } from '@/domain/entities/User';
 import type { ISale } from '@/domain/entities/Sale';
 import type { IUserTicket } from '@/domain/entities/UserTicket';
 import { toast } from 'sonner';
+import type { IUserSale } from '@/domain/entities/UserSale';
 
 const repo = new UserRepository();
 
@@ -56,7 +57,7 @@ export function useTicketsBySaleId() {
 }
 
 export function useSalesByUserId() {
-  const [sales, setSales] = useState<ISale[]>([]);
+  const [sales, setSales] = useState<IUserSale[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchSales = async (userId: string) => {
