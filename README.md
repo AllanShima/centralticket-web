@@ -52,6 +52,7 @@ This project was created using `bun init` in bun v1.3.10. [Bun](https://bun.com)
 ##### Date
 - bunx --bun shadcn@latest add popover
 - bunx --bun shadcn@latest add calendar
+
 ---
 
 #### Arquitetura utilizada

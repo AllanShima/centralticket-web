@@ -8,7 +8,6 @@ import NewEventModal from './NewEventModal'
 import { useEvents } from './hooks/useEvents'
 import type { IEvent } from '@/domain/entities/Event'
 import * as motion from "motion/react-client"
-import { useMe } from './hooks/useAuth'
 
 const Homepage = () => {
     const { fetchEvents, events : fetchedEvents, loading: loadingEvents } = useEvents();

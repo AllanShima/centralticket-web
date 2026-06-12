@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({children} : ProtectedRouteProps) => {
     const { user, loading } = useAuth() // dados do contexto de autenticação do usuário
+    
     if (loading) return <p>Carregando...</p>;
 
     if (!user) {
